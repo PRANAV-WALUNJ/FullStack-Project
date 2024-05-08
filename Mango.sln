@@ -13,13 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mango.Services.Coupon.API", "Mango.Services.Coupon.API\Mango.Services.Coupon.API.csproj", "{2EC75B83-0F30-40FD-8664-54086DEFE64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.Web", "Mango.Web\Mango.Web.csproj", "{AD86E667-DDD1-4950-9173-698FA11F0539}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{754AF955-C6E6-4657-B431-C33D9956C10C}"
-	ProjectSection(SolutionItems) = preProject
-		SD.cs = SD.cs
-		StaticData.cs = StaticData.cs
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mango.Web", "Mango.Web\Mango.Web.csproj", "{AD86E667-DDD1-4950-9173-698FA11F0539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,7 +36,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2EC75B83-0F30-40FD-8664-54086DEFE64B} = {6BFABF54-64F8-4329-9AB0-904274B76991}
 		{AD86E667-DDD1-4950-9173-698FA11F0539} = {84839FEF-ED59-4290-A0DA-AA10ADB3A2CB}
-		{754AF955-C6E6-4657-B431-C33D9956C10C} = {84839FEF-ED59-4290-A0DA-AA10ADB3A2CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6335D7B2-0A8E-4AC5-9505-B4DFD0F2981D}
