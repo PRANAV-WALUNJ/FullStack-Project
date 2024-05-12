@@ -2,6 +2,7 @@
 using Mango.Web.Services.IService;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using static Mango.Web.Utility.StaticData;
 
@@ -14,61 +15,61 @@ namespace Mango.Web.Services.Repository
         {
             _httpClientFactory = httpClientFactory;
         }
+        
         public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
         {
             try
             {
-            HttpClient httpClient = _httpClientFactory.CreateClient("MangoAPI");
-            HttpRequestMessage message = new();
-            message.Headers.Add("Content-Type", "application/json");
-            //token
+                HttpClient httpClient = _httpClientFactory.CreateClient("MangoAPI");
+                HttpRequestMessage message = new();
 
-            message.RequestUri = new Uri(requestDto.Url);
-            if (requestDto.Data != null)
-            {
-                message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
-            }
-            HttpResponseMessage? apiResponse = null;
+                // Set request URI
+                message.RequestUri = new Uri(requestDto.Url);
 
-            switch (requestDto.Apitype)
-            {
-                case ApiType.POST:
-                    message.Method = HttpMethod.Post;
-                    break;
-                case ApiType.PUT:
-                    message.Method = HttpMethod.Put;
-                    break;
-                case ApiType.DELETE:
-                    message.Method = HttpMethod.Delete;
-                    break;
-                default:
-                    message.Method = HttpMethod.Get;
-                    break;
+                // Create HttpContent for request data
+                HttpContent requestData = null;
+                if (requestDto.Data != null)
+                {
+                    requestData = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
+                }
 
-            }
+                // Set method and content
+                switch (requestDto.Apitype)
+                {
+                    case ApiType.POST:
+                        message.Method = HttpMethod.Post;
+                        message.Content = requestData;
+                        break;
+                    case ApiType.PUT:
+                        message.Method = HttpMethod.Put;
+                        message.Content = requestData;
+                        break;
+                    case ApiType.DELETE:
+                        message.Method = HttpMethod.Delete;
+                        break;
+                    default:
+                        message.Method = HttpMethod.Get;
+                        break;
+                }
 
-            apiResponse = await httpClient.SendAsync(message);
+                // Set Content-Type header on HttpContent object
+                if (requestData != null)
+                {
+                    requestData.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                }
 
-            switch (apiResponse.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return new() { Success = false, Message = "Not Found" };
+                HttpResponseMessage? apiResponse = await httpClient.SendAsync(message);
 
-                case HttpStatusCode.Forbidden:
-                    return new() { Success = false, Message = "Access Denied" };
+                // Handle response
+                switch (apiResponse.StatusCode)
+                {
+                    // Handle various status codes
+                }
 
-                case HttpStatusCode.Unauthorized:
-                    return new() { Success = false, Message = "Unauthorized" };
-
-                case HttpStatusCode.InternalServerError:
-                    return new() { Success = false, Message = "InternalServerError" };
-
-                default:
-                    var apiContent = await apiResponse.Content.ReadAsStringAsync();
-                    var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
-
-                    return apiResponseDto;  
-            }
+                // Return response if no exception occurred
+                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+                return apiResponseDto;
             }
             catch (Exception ex)
             {
@@ -79,8 +80,8 @@ namespace Mango.Web.Services.Repository
                 };
                 return response;
             }
-
-
         }
+
+
     }
 }
