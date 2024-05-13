@@ -73,6 +73,7 @@ namespace Mango.Web.Services.Repository
             }
             catch (Exception ex)
             {
+                
                 var response = new ResponseDto
                 {
                     Message = ex.Message,

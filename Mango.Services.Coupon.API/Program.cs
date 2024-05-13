@@ -1,7 +1,7 @@
-using AutoMapper;
 using Mango.Services.Coupon.API.Data;
 using Mango.Services.Coupon.API.Interface;
 using Mango.Services.Coupon.API.Mapper;
+using Mango.Services.Coupon.API.Models;
 using Mango.Services.Coupon.API.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
 });
 builder.Services.AddScoped<IMango,MangoRepositoycs>();
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 
 var mapper = MappingConfig.RegisterMaps();
 builder.Services.AddSingleton(mapper);
