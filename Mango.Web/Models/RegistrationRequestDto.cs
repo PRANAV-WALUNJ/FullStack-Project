@@ -1,4 +1,4 @@
-﻿namespace CouponAuthService.Model.DTO
+﻿namespace Mango.Web.Models
 {
 	public class RegistrationRequestDto
 	{

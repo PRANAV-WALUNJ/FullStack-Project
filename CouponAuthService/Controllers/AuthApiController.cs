@@ -1,5 +1,6 @@
 ﻿using CouponAuthService.Model.DTO;
 using CouponAuthService.Services.IService;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CouponAuthService.Controllers
@@ -30,7 +31,12 @@ namespace CouponAuthService.Controllers
 			}
 			return Ok(_responseDto);
 		}
-
+		//public async Task<IActionResult> LogOut()
+		//{
+		//	await HttpContext.SignOutAsync();
+		//	_tokenProvider.ClearToken();
+		//	return RedirectToAction("Index","Home");
+		//}
 		[HttpPost("login")]
 		public async Task<IActionResult> LogIn([FromBody] LoginRequestDto model)
 		{
@@ -42,6 +48,21 @@ namespace CouponAuthService.Controllers
 				return BadRequest(_responseDto);
 			}
 			_responseDto.Result = response;
+			return Ok(_responseDto);
+		}
+
+
+		[HttpPost("assignrole")]
+		public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+		{
+			var response = await _authService.AssignRole(model.Email,model.Role.ToUpper());
+			if (!response)
+			{
+				_responseDto.Success = false;
+				_responseDto.Message = "Error while assign role";
+				return BadRequest(_responseDto);
+			}
+			
 			return Ok(_responseDto);
 		}
 	}
