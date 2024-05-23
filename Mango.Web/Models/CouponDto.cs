@@ -2,9 +2,9 @@
 {
     public class CouponDto
     {
-        public int CounponId { get; set; }
-        public string CounponCode { get; set; }
-        public double DiscountAmmount { get; set; }
-        public int MinAmmount { get; set; }
+        public int CouponId { get; set; }
+        public string CouponCode { get; set; }
+        public double DiscountAmount { get; set; }
+        public int MinAmount { get; set; }
     }
 }

@@ -1,25 +1,43 @@
-using Mango.Web.Services.IService;
-using Mango.Web.Services.Repository;
+using Mango.Web.Service;
+using Mango.Web.Service.IService;
 using Mango.Web.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
-builder.Services.AddHttpClient<ICouponService,CouponService>();
+builder.Services.AddHttpClient("MangoAPI").ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler
+    {
+        SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
+        ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+        {
+            // Bypass SSL validation for testing purposes
+            return true; // Remove this in production
+        }
+    };
+    return handler;
+});
+builder.Services.AddHttpClient<IProductService, ProductService>();
+builder.Services.AddHttpClient<ICouponService, CouponService>();
+builder.Services.AddHttpClient<ICartService, CartService>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
-
-
-StaticData.CouponAPIBase = builder.Configuration["ServicesUrls:CouponAPI"];
-StaticData.AuthAPIBase = builder.Configuration["ServicesUrls:AuthAPI"];
-
-
-builder.Services.AddScoped<IBaseService, BaseService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddHttpClient<IOrderService, OrderService>();
+SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+SD.OrderAPIBase= builder.Configuration["ServiceUrls:OrderAPI"];
+SD.ShoppingCartAPIBase = builder.Configuration["ServiceUrls:ShoppingCartAPI"];
+SD.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
+SD.ProductAPIBase= builder.Configuration["ServiceUrls:ProductAPI"];
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddScoped<IBaseService, BaseService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -44,7 +62,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
